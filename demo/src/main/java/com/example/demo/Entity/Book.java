@@ -1,9 +1,6 @@
 package com.example.demo.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -11,13 +8,19 @@ import java.time.LocalDate;
 
 
 @Entity
-@Table(name = "BOOK")
+@Table(name = "book")
 public class Book {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
+
+    @Column(unique = true,nullable = false)
     private String title;
-    private String author;
+
+    @ManyToOne
+    @JoinColumn(name = "writer_id")
+    private Writer author;
 
 
     private Date publicationDate;
@@ -25,7 +28,7 @@ public class Book {
 
     protected Book(){}
 
-    public Book(String title, String author, Date publicationDate) {
+    public Book(String title, Writer author, Date publicationDate) {
         this.title = title;
         this.author = author;
         this.publicationDate = publicationDate;
@@ -39,8 +42,8 @@ public class Book {
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getAuthor() { return author; }
-    public void setAuthor(String author) { this.author = author; }
+    public Writer getAuthor() { return author; }
+    public void setAuthor(Writer author) { this.author = author; }
 
     public Date getPublicationDate() {
         return publicationDate;

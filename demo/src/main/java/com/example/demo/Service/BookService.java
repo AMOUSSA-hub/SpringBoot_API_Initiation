@@ -2,22 +2,24 @@ package com.example.demo.Service;
 
 import com.example.demo.DTO.BookDTO;
 import com.example.demo.Entity.Book;
+import com.example.demo.Entity.Writer;
 import com.example.demo.Mapper.BookMapper;
+import com.example.demo.Mapper.WriterMapper;
 import com.example.demo.Repository.BookRepository;
+import com.example.demo.Repository.WriterRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final WriterRepository writerRepository;
 
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, WriterRepository writerRepository) {
         this.bookRepository = bookRepository;
+        this.writerRepository = writerRepository;
     }
 
 
@@ -42,11 +44,21 @@ public class BookService {
 
     /**
      * Ajouter un livre.
-     * @param book
+     * @param bookdto
      * @return
      */
-    public BookDTO addBook ( BookDTO book){
-      return  BookMapper.toDTO(bookRepository.save(BookMapper.toEntity(book))) ;
+    public BookDTO addBook ( BookDTO bookdto){
+
+        Writer author;
+        if(bookdto.author().id()==0 || !writerRepository.existsById(bookdto.author().id()) ){
+           author =  writerRepository.save(WriterMapper.toEntity(bookdto.author()));
+        }else{
+            author = writerRepository.findById(bookdto.author().id()).orElseThrow( () -> new RuntimeException("Ecrivain non trouvé !"));
+        }
+        Book book = BookMapper.toEntity(bookdto);
+        book.setAuthor(author);
+
+      return  BookMapper.toDTO(bookRepository.save(book)) ;
 
     }
 
@@ -58,14 +70,27 @@ public class BookService {
     public BookDTO updateBook ( BookDTO bookdto ){
         Book book= bookRepository.findById(bookdto.id()).orElseThrow( () -> new RuntimeException("Modification impossible ! Aucun livre avec cet id trouvé."));
         book.setTitle(bookdto.title());
-        book.setAuthor(bookdto.author());
+        book.setAuthor(writerRepository.findById(bookdto.author().id()).orElseThrow(() -> new RuntimeException("Modification impossible ! Aucun livre avec cet id trouvé.")));
         book.setPublicationDate(bookdto.publicationDate());
         bookRepository.save(book);
 
         return BookMapper.toDTO(book);
     }
-
+    /**
+     * Supprimer un livre via son id.
+     * @param id
+     */
     public void deleteBook(int id){
         bookRepository.delete(bookRepository.findById(id).orElseThrow( () -> new RuntimeException("Supression impossible ! Aucun livre avec cet id enregistré.")));
+    }
+
+    /**
+     * Récupérer tous les livres d'un écrivain.
+     * @param id
+     * @return
+     */
+    public Iterable<BookDTO> getBooksbyAuthor(int id){
+            Writer writer = writerRepository.findById(id).orElseThrow( () -> new RuntimeException("Ecrivain introuvable ! "));    
+            return BookMapper.toDTOs(writer.getBooks());
     }
 }

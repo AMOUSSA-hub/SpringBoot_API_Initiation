@@ -1,16 +1,12 @@
 package com.example.demo.Controller;
 
 import com.example.demo.DTO.BookDTO;
-import com.example.demo.Entity.Book;
-import com.example.demo.Mapper.BookMapper;
 import com.example.demo.Service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 public class BookController {
@@ -36,13 +32,13 @@ public class BookController {
      * @param id
      * @return le livre souhaité.
      */
-    @GetMapping("/book")
-    public ResponseEntity<BookDTO> getBook(@RequestParam int id){
+    @GetMapping("/book/{id}")
+    public ResponseEntity<BookDTO> getBook(@PathVariable int id){
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
     /**
-     * Endpoint pour ajouter un livre (POST).
+     * Endpoint pour enregister un livre (POST).
      * @param bookdto
      * @return le livre qui vient d'être ajouté.
      */
@@ -65,13 +61,24 @@ public class BookController {
      * Endpoint pour supprimer un livre (DELETE).
      * @param id
      */
-    @DeleteMapping("/book")
-    public ResponseEntity<Void> deleteBook(@RequestParam int id){
+    @DeleteMapping("/book/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable int id){
+        
         bookService.deleteBook(id);
-
         return ResponseEntity.noContent().build();
+    
     }
 
+
+    /**
+     * Endpoint pour obtenir tous les livres écrits par un auteur en particulier (via son id) (GET).
+     * @param id id de l'auteur.
+     * @return
+     */
+    @GetMapping("/books/writer/{id}")
+    public ResponseEntity<Iterable<BookDTO>> getBookOfAuthor(@PathVariable int id){
+        return ResponseEntity.ok(bookService.getBooksbyAuthor(id));
+    }
 
 
 }

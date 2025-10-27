@@ -1,29 +1,21 @@
 package com.example.demo.Repository;
 
-
 import com.example.demo.Entity.Book;
 import com.example.demo.Entity.Writer;
-
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository extends  CrudRepository<Book, Integer> {
+public interface WriterRepository extends CrudRepository<Writer, Integer> {
 
 
     @Override
-    Iterable<Book> findAll();
+    Iterable<Writer> findAll();
 
 
-    Optional<Book> findById(int aLong);
-
-    List<Book> findByAuthorContaining(String keyword);
-    Iterable<Book> findByAuthorId(int id);
-
-
+    Optional<Writer> findById(int aLong);
 
 
 
 }
-
