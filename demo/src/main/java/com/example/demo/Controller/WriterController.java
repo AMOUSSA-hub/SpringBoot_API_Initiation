@@ -20,7 +20,7 @@ public class WriterController {
         this.writerService = writerService;
     }
 
-      /**
+    /**
      * Endpoint pour récupérer l'ensemble des écrivains (GET).
      *
      * @return Les livres.
@@ -59,7 +59,7 @@ public class WriterController {
      * @param bookdto
      * @return l'écrivain avec les infos modifiés.
      */
-    @PutMapping("writer")
+    @PutMapping("/writer")
     public ResponseEntity<WriterDTO> updateWriter(@RequestBody WriterDTO writerDTO){
      return  ResponseEntity.ok(writerService.updateWriter(writerDTO));
     }

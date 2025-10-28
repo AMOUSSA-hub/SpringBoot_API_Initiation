@@ -9,9 +9,9 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: demo
       MYSQL_USER: bob
-      MYSQL_PASSWORD: mdp
+      MYSQL_PASSWORD: mdp 
     ports:
-      - "3306:3306"
+      - "3305:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -25,17 +25,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/booksdb
-      SPRING_DATASOURCE_USERNAME: appuser
-      SPRING_DATASOURCE_PASSWORD: apppass
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQL8Dialect
       SPRING_PROFILES_ACTIVE: docker
-    depends_on:
+    depends_on: 
       - mysql
     networks:
       - springnet
-
 volumes:
   mysql_data:
 
