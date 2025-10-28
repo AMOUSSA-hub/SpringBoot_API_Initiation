@@ -25,6 +25,11 @@ public class WriterService {
     }
 
 
+    public WriterDTO getWriterById(int id){
+        return WriterMapper.toDTO(writerRepository.findById(id).orElseThrow( () -> new RuntimeException("Modification impossible ! Aucun écrivain avec cet id trouvé.")));
+    }
+
+
     public WriterDTO addWriter ( WriterDTO writerDTO){
         Writer writer  = writerRepository.save(WriterMapper.toEntity(writerDTO));
         return WriterMapper.toDTO(writer);

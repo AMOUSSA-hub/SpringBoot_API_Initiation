@@ -31,6 +31,19 @@ public class WriterController {
     }
 
 
+
+    /**
+     * Endpoint pour rechercher un écrivain avec son id (GET).
+     * @param id
+     * @return l'écrivain souhaité.
+     */
+    @GetMapping("/writer/{id}")
+    public ResponseEntity<WriterDTO> getWriter(@PathVariable int id){
+        return ResponseEntity.ok(writerService.getWriterById(id));
+    }
+
+
+
     /**
      * Endpoint pour enregister un écrivain (POST).
      * @param bookdto
