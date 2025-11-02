@@ -50,7 +50,7 @@ public class BookService {
     public BookDTO addBook ( BookDTO bookdto){
 
         Writer author;
-        if(bookdto.author().id()==0 || !writerRepository.existsById(bookdto.author().id()) ){
+        if(bookdto.author().id()==-1 || !writerRepository.existsById(bookdto.author().id()) ){
            author =  writerRepository.save(WriterMapper.toEntity(bookdto.author()));
         }else{
             author = writerRepository.findById(bookdto.author().id()).orElseThrow( () -> new RuntimeException("Ecrivain non trouvé !"));
@@ -70,7 +70,16 @@ public class BookService {
     public BookDTO updateBook ( BookDTO bookdto ){
         Book book= bookRepository.findById(bookdto.id()).orElseThrow( () -> new RuntimeException("Modification impossible ! Aucun livre avec cet id trouvé."));
         book.setTitle(bookdto.title());
-        book.setAuthor(writerRepository.findById(bookdto.author().id()).orElseThrow(() -> new RuntimeException("Modification impossible ! Aucun livre avec cet id trouvé.")));
+
+        if(writerRepository.existsById(bookdto.author().id())){
+            book.setAuthor(writerRepository.findById(bookdto.author().id()).orElseThrow(() -> new RuntimeException("Modification impossible ! Aucun livre avec cet id trouvé.")));
+        }
+        else{
+            Writer newAuthor = WriterMapper.toEntity(bookdto.author());
+            writerRepository.save(newAuthor);
+            book.setAuthor(newAuthor);
+        }
+        
         book.setPublicationDate(bookdto.publicationDate());
         bookRepository.save(book);
 
